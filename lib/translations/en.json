@@ -1,0 +1,93 @@
+{
+  "navigation": {
+    "home": "Home",
+    "liveTracking": "Live Tracking",
+    "routeSearch": "Route Search",
+    "nextBusAlert": "Next Bus Alert",
+    "adminDashboard": "Admin Dashboard",
+    "aboutUs": "About Us",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "updates": "Updates"
+  },
+  "homepage": {
+    "hero": {
+      "title": "Real-Time Bus Tracking for Smart Cities",
+      "subtitle": "Never miss your bus again. Track live locations, get accurate ETAs, and plan your journey with confidence.",
+      "trackMyBus": "Track My Bus",
+      "searchRoute": "Search Route"
+    },
+    "stats": {
+      "activeRoutes": "Active Routes",
+      "busStops": "Bus Stops",
+      "onTimePerformance": "On-Time Performance"
+    },
+    "features": {
+      "title": "Everything You Need for Smart Transit",
+      "subtitle": "Our comprehensive platform provides real-time tracking, route planning, and smart alerts for efficient public transportation.",
+      "liveTracking": {
+        "title": "Live Tracking",
+        "description": "See real-time bus locations on an interactive map with accurate GPS positioning.",
+        "cta": "View Live Map →"
+      },
+      "routeSearch": {
+        "title": "Route Search",
+        "description": "Find the best routes, stops, and schedules for your journey across the city.",
+        "cta": "Search Routes →"
+      },
+      "smartAlerts": {
+        "title": "Smart Alerts",
+        "description": "Get notified about bus arrivals, delays, and service updates in real-time.",
+        "cta": "Set Up Alerts →"
+      },
+      "accurateETAs": {
+        "title": "Accurate ETAs",
+        "description": "Precise arrival time predictions based on real traffic conditions and historical data."
+      },
+      "analyticsDashboard": {
+        "title": "Analytics Dashboard",
+        "description": "Comprehensive insights for transit authorities to optimize routes and improve service.",
+        "cta": "View Dashboard →"
+      },
+      "communityDriven": {
+        "title": "Community Driven",
+        "description": "Built by local developers who understand the unique needs of small city transportation.",
+        "cta": "Meet the Team →"
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Commute?",
+      "subtitle": "Join thousands of commuters who rely on SmartTransit for their daily journeys.",
+      "button": "Start Tracking Now"
+    },
+    "footer": {
+      "description": "Making public transportation smarter, more reliable, and accessible for everyone in small cities.",
+      "quickLinks": "Quick Links",
+      "support": "Support",
+      "liveTracking": "Live Tracking",
+      "routeSearch": "Route Search",
+      "busAlerts": "Bus Alerts",
+      "dashboard": "Dashboard",
+      "copyright": "© 2024 SmartTransit. Built with ❤️ for smart cities."
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "remove": "Remove",
+    "yes": "Yes",
+    "no": "No"
+  }
+}

@@ -1,20 +1,33 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { AlertTriangle, Info, CheckCircle, Clock, Bell, Filter } from "lucide-react"
+import { AlertTriangle, Info, CheckCircle, Clock, Bell, Filter, RefreshCw } from "lucide-react"
 
 export default function AlertsPage() {
   const { t } = useLanguage()
+  const [filterPriority, setFilterPriority] = useState<string | null>(null)
+  const [filterType, setFilterType] = useState<string | null>(null)
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
+
+  // Auto-refresh alerts every 20 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLastUpdated(new Date())
+    }, 20000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   const alerts = [
     {
       id: 1,
       title: "Route 4 Temporarily Suspended",
-      description: "Route 4 (Residential Area - Office Complex) is temporarily suspended due to road construction. Expected to resume by 5:00 PM today.",
+      description: "Route 4 (Lajpat Nagar - Golf Course Road) is temporarily suspended due to road construction. Expected to resume by 5:00 PM today.",
       type: "warning",
       priority: "high",
       timestamp: "2 hours ago",
@@ -24,7 +37,7 @@ export default function AlertsPage() {
     {
       id: 2,
       title: "Delays on Route 1",
-      description: "Heavy traffic on Central Market - Tech Park route causing 15-20 minute delays. Please plan accordingly.",
+      description: "Heavy traffic on Connaught Place - Cyber City route causing 15-20 minute delays. Please plan accordingly.",
       type: "info",
       priority: "medium",
       timestamp: "1 hour ago",
@@ -34,7 +47,7 @@ export default function AlertsPage() {
     {
       id: 3,
       title: "New Bus Added to Route 3",
-      description: "An additional bus has been added to Route 3 (University - Mall) to improve frequency during peak hours.",
+      description: "An additional bus has been added to Route 3 (Delhi University - DLF Mall) to improve frequency during peak hours.",
       type: "success",
       priority: "low",
       timestamp: "3 hours ago",
@@ -54,7 +67,7 @@ export default function AlertsPage() {
     {
       id: 5,
       title: "Route 2 Maintenance Complete",
-      description: "Scheduled maintenance on Route 2 buses has been completed. All buses are now operational.",
+      description: "Scheduled maintenance on Route 2 (Rajiv Chowk Metro - IGI Airport) buses has been completed. All buses are now operational.",
       type: "success",
       priority: "low",
       timestamp: "1 day ago",
@@ -112,8 +125,52 @@ export default function AlertsPage() {
     }
   }
 
-  const activeAlerts = alerts.filter(alert => alert.status === 'active')
-  const resolvedAlerts = alerts.filter(alert => alert.status === 'resolved')
+  // Filter alerts based on priority and type
+  const filteredAlerts = alerts.filter(alert => {
+    const priorityMatch = !filterPriority || alert.priority === filterPriority
+    const typeMatch = !filterType || alert.type === filterType
+    return priorityMatch && typeMatch
+  })
+
+  const activeAlerts = filteredAlerts.filter(alert => alert.status === 'active')
+  const resolvedAlerts = filteredAlerts.filter(alert => alert.status === 'resolved')
+
+  // Handler functions for clickable sections
+  const handlePriorityFilter = (priority: string) => {
+    setFilterPriority(filterPriority === priority ? null : priority)
+    setFilterType(null) // Clear type filter when priority is selected
+  }
+
+  const handleTypeFilter = (type: string) => {
+    setFilterType(filterType === type ? null : type)
+    setFilterPriority(null) // Clear priority filter when type is selected
+  }
+
+  const handleSubscribeToAlerts = () => {
+    // Scroll to active alerts section
+    document.querySelector('.lg\\:col-span-3')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleFilterByRoute = () => {
+    // Clear all filters and show all alerts
+    setFilterPriority(null)
+    setFilterType(null)
+    // Scroll to alerts section
+    document.querySelector('.lg\\:col-span-3')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleViewHistory = () => {
+    // Scroll to resolved alerts section
+    const resolvedSection = document.querySelector('.mt-8')
+    if (resolvedSection) {
+      resolvedSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const clearAllFilters = () => {
+    setFilterPriority(null)
+    setFilterType(null)
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -121,21 +178,35 @@ export default function AlertsPage() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-balance mb-2">
-            Service Alerts & Notifications
-          </h1>
-          <p className="text-muted-foreground text-pretty">
-            Stay updated with the latest service alerts, delays, and important announcements.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-balance mb-2">
+                {t('alerts.title')}
+              </h1>
+              <p className="text-muted-foreground text-pretty">
+                {t('alerts.subtitle')}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <RefreshCw className="h-4 w-4 animate-spin" />
+              <span>Auto-refresh</span>
+              <span>• Last updated: {lastUpdated.toLocaleTimeString()}</span>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Active Alerts</h2>
+              <h2 className="text-xl font-semibold">{t('alerts.activeAlerts')}</h2>
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4" />
-                <Badge variant="outline">{activeAlerts.length} active</Badge>
+                <Badge variant="outline">{activeAlerts.length} {t('alerts.active')}</Badge>
+                {(filterPriority || filterType) && (
+                  <Button variant="ghost" size="sm" onClick={clearAllFilters}>
+                    Clear Filters
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -161,7 +232,7 @@ export default function AlertsPage() {
                 <CardContent className="pt-0">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Affected Routes:</span>
+                      <span className="text-sm font-medium">{t('alerts.affectedRoutes')}:</span>
                       <div className="flex gap-1">
                         {alert.affectedRoutes.map((route, index) => (
                           <Badge key={index} variant="outline" className="text-xs">
@@ -171,7 +242,7 @@ export default function AlertsPage() {
                       </div>
                     </div>
                     <Button variant="outline" size="sm">
-                      Get Updates
+                      {t('alerts.getUpdates')}
                     </Button>
                   </div>
                 </CardContent>
@@ -180,8 +251,8 @@ export default function AlertsPage() {
 
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Resolved Alerts</h2>
-                <Badge variant="outline">{resolvedAlerts.length} resolved</Badge>
+                <h2 className="text-xl font-semibold">{t('alerts.resolvedAlerts')}</h2>
+                <Badge variant="outline">{resolvedAlerts.length} {t('alerts.resolved')}</Badge>
               </div>
 
               {resolvedAlerts.map((alert) => (
@@ -197,7 +268,7 @@ export default function AlertsPage() {
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         <Badge variant="outline" className="text-green-600">
-                          Resolved
+                          {t('alerts.resolved')}
                         </Badge>
                         <span className="text-xs text-gray-500">{alert.timestamp}</span>
                       </div>
@@ -213,35 +284,47 @@ export default function AlertsPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Bell className="h-5 w-5" />
-                  Alert Summary
+                  {t('alerts.alertSummary')}
                 </CardTitle>
-                <CardDescription>Current alert status</CardDescription>
+                <CardDescription>{t('alerts.currentStatus')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Active Alerts</span>
+                  <span className="text-sm">{t('alerts.activeAlerts')}</span>
                   <Badge variant="outline" className="text-orange-600">{activeAlerts.length}</Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">High Priority</span>
-                  <Badge variant="outline" className="text-red-600">
+                <div 
+                  className="flex items-center justify-between cursor-pointer hover:bg-red-50 p-2 rounded transition-colors"
+                  onClick={() => handlePriorityFilter('high')}
+                >
+                  <span className="text-sm">{t('alerts.highPriority')}</span>
+                  <Badge variant="outline" className={`text-red-600 ${filterPriority === 'high' ? 'bg-red-100' : ''}`}>
                     {alerts.filter(a => a.priority === 'high' && a.status === 'active').length}
                   </Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Medium Priority</span>
-                  <Badge variant="outline" className="text-yellow-600">
+                <div 
+                  className="flex items-center justify-between cursor-pointer hover:bg-yellow-50 p-2 rounded transition-colors"
+                  onClick={() => handlePriorityFilter('medium')}
+                >
+                  <span className="text-sm">{t('alerts.mediumPriority')}</span>
+                  <Badge variant="outline" className={`text-yellow-600 ${filterPriority === 'medium' ? 'bg-yellow-100' : ''}`}>
                     {alerts.filter(a => a.priority === 'medium' && a.status === 'active').length}
                   </Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Low Priority</span>
-                  <Badge variant="outline" className="text-green-600">
+                <div 
+                  className="flex items-center justify-between cursor-pointer hover:bg-green-50 p-2 rounded transition-colors"
+                  onClick={() => handlePriorityFilter('low')}
+                >
+                  <span className="text-sm">{t('alerts.lowPriority')}</span>
+                  <Badge variant="outline" className={`text-green-600 ${filterPriority === 'low' ? 'bg-green-100' : ''}`}>
                     {alerts.filter(a => a.priority === 'low' && a.status === 'active').length}
                   </Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Resolved Today</span>
+                <div 
+                  className="flex items-center justify-between cursor-pointer hover:bg-blue-50 p-2 rounded transition-colors"
+                  onClick={handleViewHistory}
+                >
+                  <span className="text-sm">{t('alerts.resolvedToday')}</span>
                   <Badge variant="outline" className="text-blue-600">
                     {resolvedAlerts.length}
                   </Badge>
@@ -251,51 +334,81 @@ export default function AlertsPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Manage your alerts</CardDescription>
+                <CardTitle>{t('alerts.quickActions')}</CardTitle>
+                <CardDescription>{t('alerts.manageAlerts')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  onClick={handleSubscribeToAlerts}
+                >
                   <Bell className="h-4 w-4 mr-2" />
-                  Subscribe to Alerts
+                  {t('alerts.subscribeToAlerts')}
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start hover:bg-green-50 hover:border-green-300 transition-colors"
+                  onClick={handleFilterByRoute}
+                >
                   <Filter className="h-4 w-4 mr-2" />
-                  Filter by Route
+                  {t('alerts.filterByRoute')}
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start hover:bg-purple-50 hover:border-purple-300 transition-colors"
+                  onClick={handleViewHistory}
+                >
                   <Clock className="h-4 w-4 mr-2" />
-                  View History
+                  {t('alerts.viewHistory')}
                 </Button>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Alert Types</CardTitle>
-                <CardDescription>Understanding alert categories</CardDescription>
+                <CardTitle>{t('alerts.alertTypes')}</CardTitle>
+                <CardDescription>{t('alerts.alertTypesDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:bg-orange-50 p-2 rounded transition-colors"
+                  onClick={() => handleTypeFilter('warning')}
+                >
                   <AlertTriangle className="h-4 w-4 text-orange-500" />
-                  <div>
-                    <div className="text-sm font-medium">Warning</div>
-                    <div className="text-xs text-gray-600">Service disruptions</div>
+                  <div className="flex-1">
+                    <div className={`text-sm font-medium ${filterType === 'warning' ? 'text-orange-700' : ''}`}>{t('alerts.warning')}</div>
+                    <div className="text-xs text-gray-600">{t('alerts.warningDesc')}</div>
                   </div>
+                  {filterType === 'warning' && (
+                    <Badge variant="outline" className="text-orange-600 bg-orange-100">Active</Badge>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:bg-blue-50 p-2 rounded transition-colors"
+                  onClick={() => handleTypeFilter('info')}
+                >
                   <Info className="h-4 w-4 text-blue-500" />
-                  <div>
-                    <div className="text-sm font-medium">Information</div>
-                    <div className="text-xs text-gray-600">General updates</div>
+                  <div className="flex-1">
+                    <div className={`text-sm font-medium ${filterType === 'info' ? 'text-blue-700' : ''}`}>{t('alerts.information')}</div>
+                    <div className="text-xs text-gray-600">{t('alerts.informationDesc')}</div>
                   </div>
+                  {filterType === 'info' && (
+                    <Badge variant="outline" className="text-blue-600 bg-blue-100">Active</Badge>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:bg-green-50 p-2 rounded transition-colors"
+                  onClick={() => handleTypeFilter('success')}
+                >
                   <CheckCircle className="h-4 w-4 text-green-500" />
-                  <div>
-                    <div className="text-sm font-medium">Success</div>
-                    <div className="text-xs text-gray-600">Service improvements</div>
+                  <div className="flex-1">
+                    <div className={`text-sm font-medium ${filterType === 'success' ? 'text-green-700' : ''}`}>{t('alerts.success')}</div>
+                    <div className="text-xs text-gray-600">{t('alerts.successDesc')}</div>
                   </div>
+                  {filterType === 'success' && (
+                    <Badge variant="outline" className="text-green-600 bg-green-100">Active</Badge>
+                  )}
                 </div>
               </CardContent>
             </Card>

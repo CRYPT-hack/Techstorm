@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import 'leaflet/dist/leaflet.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -121,5 +122,76 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* Hindi/Devanagari font support */
+  [lang="hi"], .hindi-text {
+    font-family: 'Noto Sans Devanagari', 'Noto Sans', system-ui, sans-serif;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  
+  /* Smooth language transition animations */
+  .language-transition {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+  
+  .language-transition.fade-out {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  
+  .language-transition.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Ensure proper text rendering for both languages */
+  .multilingual-text {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Mobile-specific optimizations */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    /* Improve touch targets for mobile */
+    button, a, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Better spacing on mobile */
+    .space-y-3 > * + * {
+      margin-top: 0.5rem;
+    }
+    
+    /* Optimize card layouts for mobile */
+    .grid-cols-1 {
+      gap: 1rem;
+    }
+  }
+
+  /* Improve mobile scrolling */
+  @media (max-width: 640px) {
+    html {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    
+    body {
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 5rem; /* Space for bottom navigation */
+    }
+    
+    /* Better mobile navigation */
+    .mobile-menu {
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+    }
   }
 }

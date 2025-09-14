@@ -71,6 +71,196 @@
       "copyright": "© 2024 SmartTransit. Built with ❤️ for smart cities."
     }
   },
+  "about": {
+    "title": "About SmartTransit",
+    "subtitle": "Revolutionizing public transportation through innovative technology and community-driven solutions.",
+    "mission": {
+      "title": "Our Mission",
+      "description": "To make public transportation more accessible, reliable, and efficient for everyone in small cities through cutting-edge technology and real-time data."
+    },
+    "vision": {
+      "title": "Our Vision",
+      "description": "A world where public transportation is seamlessly integrated into daily life, reducing traffic congestion and environmental impact."
+    },
+    "values": {
+      "title": "Our Values",
+      "innovation": "Innovation",
+      "innovationDesc": "Continuously improving through technology",
+      "community": "Community",
+      "communityDesc": "Building solutions with and for our users",
+      "reliability": "Reliability",
+      "reliabilityDesc": "Providing accurate and dependable service",
+      "accessibility": "Accessibility",
+      "accessibilityDesc": "Making transit available to everyone"
+    },
+    "team": {
+      "title": "Leadership Team"
+    },
+    "office": {
+      "description": "Visit our main office"
+    },
+    "hours": {
+      "description": "When you can reach us"
+    },
+    "cta": {
+      "title": "Ready to Experience Our Services?",
+      "description": "Join thousands of satisfied passengers who trust us for their daily commute."
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in touch with our team. We're here to help!",
+    "form": {
+      "title": "Send us a Message",
+      "description": "Fill out the form below and we'll get back to you as soon as possible.",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "subject": "Subject",
+      "message": "Message",
+      "inquiryType": "Inquiry Type",
+      "namePlaceholder": "Your full name",
+      "emailPlaceholder": "your.email@example.com",
+      "phonePlaceholder": "+91 98765 43210",
+      "subjectPlaceholder": "Brief description of your inquiry",
+      "messagePlaceholder": "Please provide details about your inquiry...",
+      "inquiryPlaceholder": "Select inquiry type",
+      "inquiryTypes": {
+        "general": "General Inquiry",
+        "support": "Technical Support",
+        "feedback": "Feedback",
+        "partnership": "Partnership"
+      },
+      "submit": "Send Message",
+      "success": {
+        "title": "Message Sent!",
+        "message": "Thank you for contacting us. We'll get back to you within 24 hours."
+      }
+    },
+    "info": {
+      "address": "Office Location",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Office Hours"
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to common questions about SmartTransit.",
+    "questions": {
+      "howItWorks": {
+        "question": "How does real-time tracking work?",
+        "answer": "Our buses are equipped with GPS devices that send location data every 10 seconds. This information is processed and displayed on our interactive map."
+      },
+      "accuracy": {
+        "question": "How accurate are the arrival times?",
+        "answer": "Our ETA predictions are typically accurate within 2-3 minutes, taking into account real traffic conditions and historical data."
+      },
+      "coverage": {
+        "question": "Which routes are covered?",
+        "answer": "We currently cover all major bus routes in the city. Check our route map for detailed coverage information."
+      }
+    }
+  },
+  "updates": {
+    "title": "Latest Updates",
+    "subtitle": "Stay informed about new features, improvements, and important announcements for SmartTransit.",
+    "stats": {
+      "newFeatures": "New Features",
+      "improvements": "Improvements",
+      "bugFixes": "Bug Fixes",
+      "totalUpdates": "Total Updates"
+    },
+    "newsletter": {
+      "title": "Stay Updated",
+      "description": "Get notified about new features and important updates",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "disclaimer": "We'll only send you important updates. No spam, unsubscribe anytime."
+    }
+  },
+  "tracking": {
+    "title": "Live Bus Tracking",
+    "subtitle": "Track your bus in real-time and get accurate arrival predictions.",
+    "selectRoute": "Select Route",
+    "selectStop": "Select Stop",
+    "nextArrivals": "Next Arrivals",
+    "minutes": "min",
+    "arriving": "Arriving",
+    "delayed": "Delayed"
+  },
+  "routes": {
+    "title": "Bus Routes & Schedules",
+    "subtitle": "Explore all available bus routes, schedules, and fare information.",
+    "from": "From",
+    "to": "To",
+    "searchRoutes": "Search Routes",
+    "duration": "Duration",
+    "stops": "stops",
+    "frequency": "Frequency",
+    "liveUpdates": "Live Schedule Updates",
+    "routeStops": "Route Stops",
+    "fare": "Fare",
+    "activeBuses": "Active Buses",
+    "viewSchedule": "View Schedule & Book Ticket",
+    "statistics": "Route Statistics",
+    "statisticsDesc": "Overall route information",
+    "totalRoutes": "Total Routes",
+    "activeRoutes": "Active Routes",
+    "maintenance": "Under Maintenance",
+    "totalBuses": "Total Buses",
+    "averageFare": "Average Fare",
+    "delayedRoutes": "Routes with Delays",
+    "popularRoutes": "Popular Routes",
+    "popularRoutesDesc": "Most used routes",
+    "quickActions": "Quick Actions",
+    "quickActionsDesc": "Common tasks",
+    "findNearestStop": "Find Nearest Stop",
+    "checkSchedule": "Check Schedule",
+    "planJourney": "Plan Journey"
+  },
+  "alerts": {
+    "title": "Service Alerts & Notifications",
+    "subtitle": "Stay updated with the latest service alerts, delays, and important announcements.",
+    "setupAlert": "Set Up Alert",
+    "route": "Route",
+    "stop": "Stop",
+    "notifyBefore": "Notify me",
+    "minutesBefore": "minutes before arrival",
+    "activeAlerts": "Active Alerts",
+    "active": "active",
+    "affectedRoutes": "Affected Routes",
+    "getUpdates": "Get Updates",
+    "resolvedAlerts": "Resolved Alerts",
+    "resolved": "resolved",
+    "alertSummary": "Alert Summary",
+    "currentStatus": "Current alert status",
+    "highPriority": "High Priority",
+    "mediumPriority": "Medium Priority",
+    "lowPriority": "Low Priority",
+    "resolvedToday": "Resolved Today",
+    "quickActions": "Quick Actions",
+    "manageAlerts": "Manage your alerts",
+    "subscribeToAlerts": "Subscribe to Alerts",
+    "filterByRoute": "Filter by Route",
+    "viewHistory": "View History",
+    "alertTypes": "Alert Types",
+    "alertTypesDesc": "Understanding alert categories",
+    "warning": "Warning",
+    "warningDesc": "Service disruptions",
+    "information": "Information",
+    "informationDesc": "General updates",
+    "success": "Success",
+    "successDesc": "Service improvements"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "Comprehensive analytics and management tools for transit authorities.",
+    "fleetStatus": "Fleet Status",
+    "activeVehicles": "Active Vehicles",
+    "onTimePerformance": "On-Time Performance",
+    "totalPassengers": "Total Passengers"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Error",

@@ -8,20 +8,23 @@ import { useLanguage } from "@/lib/language-context"
 import { MapPin, Search, Bell, BarChart3, Clock, Users } from "lucide-react"
 
 export default function HomePage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
+  
+  console.log('HomePage: Current language:', language)
+  console.log('HomePage: Testing translation for homepage.hero.title:', t('homepage.hero.title'))
   
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4">
+      <section className="relative py-12 sm:py-20 px-4">
         <div className="container mx-auto text-center">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold text-balance mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-balance mb-6">
               {t('homepage.hero.title')}
             </h1>
-            <p className="text-xl text-muted-foreground text-pretty mb-8 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-muted-foreground text-pretty mb-8 max-w-2xl mx-auto">
               {t('homepage.hero.subtitle')}
             </p>
 
@@ -41,18 +44,18 @@ export default function HomePage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary mb-2">12</div>
-                <div className="text-muted-foreground">{t('homepage.stats.activeRoutes')}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-3xl mx-auto">
+              <div className="text-center p-4 sm:p-0">
+                <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">12</div>
+                <div className="text-sm sm:text-base text-muted-foreground">{t('homepage.stats.activeRoutes')}</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary mb-2">45</div>
-                <div className="text-muted-foreground">{t('homepage.stats.busStops')}</div>
+              <div className="text-center p-4 sm:p-0">
+                <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">45</div>
+                <div className="text-sm sm:text-base text-muted-foreground">{t('homepage.stats.busStops')}</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-primary mb-2">98%</div>
-                <div className="text-muted-foreground">{t('homepage.stats.onTimePerformance')}</div>
+              <div className="text-center p-4 sm:p-0">
+                <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">98%</div>
+                <div className="text-sm sm:text-base text-muted-foreground">{t('homepage.stats.onTimePerformance')}</div>
               </div>
             </div>
           </div>

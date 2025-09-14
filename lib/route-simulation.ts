@@ -1,11 +1,13 @@
 // Real-time route and schedule simulation (No GPS needed)
+import { addMinutesToCurrentTime } from './time-utils'
+
 export interface RouteStop {
   id: string
   name: string
   lat: number
   lng: number
-  estimatedArrival: number // minutes from now
-  actualArrival?: number
+  estimatedArrival: string // actual time like "4:15 PM"
+  actualArrival?: string
   status: 'on-time' | 'delayed' | 'early' | 'cancelled'
 }
 
@@ -22,6 +24,12 @@ export interface BusRoute {
   lastUpdated: Date
   delays: number // minutes
   passengerLoad: 'low' | 'medium' | 'high'
+  currentBusPosition?: {
+    lat: number
+    lng: number
+    nextStopId: string
+    estimatedArrival: string
+  }
 }
 
 export interface ScheduleUpdate {
@@ -49,12 +57,12 @@ export class RouteSimulator {
       {
         id: 'route-1',
         name: 'Route 1',
-        description: 'Central Market - Tech Park',
+        description: 'Connaught Place - Cyber City',
         stops: [
-          { id: 'stop-1', name: 'Central Market', lat: 28.6139, lng: 77.2090, estimatedArrival: 0, status: 'on-time' },
-          { id: 'stop-2', name: 'City Center', lat: 28.6140, lng: 77.2095, estimatedArrival: 8, status: 'on-time' },
-          { id: 'stop-3', name: 'Business District', lat: 28.6145, lng: 77.2100, estimatedArrival: 18, status: 'on-time' },
-          { id: 'stop-4', name: 'Tech Park', lat: 28.6150, lng: 77.2105, estimatedArrival: 28, status: 'on-time' }
+          { id: 'stop-1', name: 'Connaught Place', lat: 28.6315, lng: 77.2167, estimatedArrival: addMinutesToCurrentTime(0), status: 'on-time' },
+          { id: 'stop-2', name: 'India Gate', lat: 28.6129, lng: 77.2295, estimatedArrival: addMinutesToCurrentTime(8), status: 'on-time' },
+          { id: 'stop-3', name: 'AIIMS Delhi', lat: 28.5672, lng: 77.2100, estimatedArrival: addMinutesToCurrentTime(18), status: 'on-time' },
+          { id: 'stop-4', name: 'Cyber City Gurugram', lat: 28.4950, lng: 77.0890, estimatedArrival: addMinutesToCurrentTime(28), status: 'on-time' }
         ],
         duration: 45,
         frequency: 15,
@@ -63,17 +71,23 @@ export class RouteSimulator {
         status: 'active',
         lastUpdated: new Date(),
         delays: 0,
-        passengerLoad: 'medium'
+        passengerLoad: 'medium',
+        currentBusPosition: {
+          lat: 28.6200,
+          lng: 77.2100,
+          nextStopId: 'stop-3',
+          estimatedArrival: addMinutesToCurrentTime(5)
+        }
       },
       {
         id: 'route-2',
         name: 'Route 2',
-        description: 'Metro Station - Airport',
+        description: 'Rajiv Chowk Metro - IGI Airport',
         stops: [
-          { id: 'stop-5', name: 'Metro Station', lat: 28.6135, lng: 77.2085, estimatedArrival: 0, status: 'on-time' },
-          { id: 'stop-6', name: 'Railway Station', lat: 28.6140, lng: 77.2090, estimatedArrival: 12, status: 'on-time' },
-          { id: 'stop-7', name: 'Shopping Mall', lat: 28.6145, lng: 77.2095, estimatedArrival: 25, status: 'on-time' },
-          { id: 'stop-8', name: 'Airport', lat: 28.6150, lng: 77.2100, estimatedArrival: 40, status: 'on-time' }
+          { id: 'stop-5', name: 'Rajiv Chowk Metro', lat: 28.6328, lng: 77.2197, estimatedArrival: addMinutesToCurrentTime(0), status: 'on-time' },
+          { id: 'stop-6', name: 'New Delhi Railway Station', lat: 28.6434, lng: 77.2199, estimatedArrival: addMinutesToCurrentTime(12), status: 'on-time' },
+          { id: 'stop-7', name: 'Select City Walk Mall', lat: 28.5244, lng: 77.2066, estimatedArrival: addMinutesToCurrentTime(25), status: 'on-time' },
+          { id: 'stop-8', name: 'IGI Airport Terminal 3', lat: 28.5665, lng: 77.1031, estimatedArrival: addMinutesToCurrentTime(40), status: 'on-time' }
         ],
         duration: 60,
         frequency: 20,
@@ -82,17 +96,23 @@ export class RouteSimulator {
         status: 'active',
         lastUpdated: new Date(),
         delays: 0,
-        passengerLoad: 'high'
+        passengerLoad: 'high',
+        currentBusPosition: {
+          lat: 28.6380,
+          lng: 77.2200,
+          nextStopId: 'stop-6',
+          estimatedArrival: addMinutesToCurrentTime(3)
+        }
       },
       {
         id: 'route-3',
         name: 'Route 3',
-        description: 'University - Mall',
+        description: 'Delhi University - DLF Mall',
         stops: [
-          { id: 'stop-9', name: 'University', lat: 28.6130, lng: 77.2080, estimatedArrival: 0, status: 'on-time' },
-          { id: 'stop-10', name: 'Library', lat: 28.6135, lng: 77.2085, estimatedArrival: 6, status: 'on-time' },
-          { id: 'stop-11', name: 'Hospital', lat: 28.6140, lng: 77.2090, estimatedArrival: 15, status: 'on-time' },
-          { id: 'stop-12', name: 'Mall', lat: 28.6145, lng: 77.2095, estimatedArrival: 25, status: 'on-time' }
+          { id: 'stop-9', name: 'Delhi University North Campus', lat: 28.6967, lng: 77.2167, estimatedArrival: addMinutesToCurrentTime(0), status: 'on-time' },
+          { id: 'stop-10', name: 'Karol Bagh Metro', lat: 28.6514, lng: 77.1906, estimatedArrival: addMinutesToCurrentTime(6), status: 'on-time' },
+          { id: 'stop-11', name: 'Safdarjung Hospital', lat: 28.5730, lng: 77.2062, estimatedArrival: addMinutesToCurrentTime(15), status: 'on-time' },
+          { id: 'stop-12', name: 'DLF Mall of India', lat: 28.6967, lng: 77.1458, estimatedArrival: addMinutesToCurrentTime(25), status: 'on-time' }
         ],
         duration: 35,
         frequency: 10,
@@ -106,12 +126,12 @@ export class RouteSimulator {
       {
         id: 'route-4',
         name: 'Route 4',
-        description: 'Residential Area - Office Complex',
+        description: 'Lajpat Nagar - Golf Course Road',
         stops: [
-          { id: 'stop-13', name: 'Residential Area', lat: 28.6125, lng: 77.2075, estimatedArrival: 0, status: 'on-time' },
-          { id: 'stop-14', name: 'School', lat: 28.6130, lng: 77.2080, estimatedArrival: 10, status: 'on-time' },
-          { id: 'stop-15', name: 'Market', lat: 28.6135, lng: 77.2085, estimatedArrival: 20, status: 'on-time' },
-          { id: 'stop-16', name: 'Office Complex', lat: 28.6140, lng: 77.2090, estimatedArrival: 35, status: 'on-time' }
+          { id: 'stop-13', name: 'Lajpat Nagar Central Market', lat: 28.5677, lng: 77.2436, estimatedArrival: addMinutesToCurrentTime(0), status: 'on-time' },
+          { id: 'stop-14', name: 'Nehru Place Metro', lat: 28.5494, lng: 77.2519, estimatedArrival: addMinutesToCurrentTime(10), status: 'on-time' },
+          { id: 'stop-15', name: 'Saket Metro Station', lat: 28.5200, lng: 77.2066, estimatedArrival: addMinutesToCurrentTime(20), status: 'on-time' },
+          { id: 'stop-16', name: 'Golf Course Road Gurugram', lat: 28.4595, lng: 77.0266, estimatedArrival: addMinutesToCurrentTime(35), status: 'on-time' }
         ],
         duration: 50,
         frequency: 25,

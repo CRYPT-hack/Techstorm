@@ -1,6 +1,10 @@
+"use client"
+
 import { Navigation } from "@/components/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { SafeImage } from "@/components/ui/safe-image"
+import { useLanguage } from "@/lib/language-context"
 import { Calendar, Tag, ArrowRight, Zap, Bug, Plus, Wrench } from "lucide-react"
 
 const updates = [
@@ -125,6 +129,8 @@ const getTypeColor = (type: string) => {
 }
 
 export default function UpdatesPage() {
+  const { t } = useLanguage()
+  
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -132,10 +138,10 @@ export default function UpdatesPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-balance mb-6">
-            Latest <span className="text-primary">Updates</span>
+            {t('updates.title')}
           </h1>
           <p className="text-xl text-muted-foreground text-pretty max-w-2xl mx-auto">
-            Stay informed about new features, improvements, and important announcements for SmartTransit.
+            {t('updates.subtitle')}
           </p>
         </div>
 
@@ -147,7 +153,7 @@ export default function UpdatesPage() {
                 <div className="text-2xl font-bold text-primary mb-1">
                   {updates.filter((u) => u.type === "feature").length}
                 </div>
-                <div className="text-sm text-muted-foreground">New Features</div>
+                <div className="text-sm text-muted-foreground">{t('updates.stats.newFeatures')}</div>
               </CardContent>
             </Card>
             <Card className="text-center">
@@ -155,7 +161,7 @@ export default function UpdatesPage() {
                 <div className="text-2xl font-bold text-primary mb-1">
                   {updates.filter((u) => u.type === "improvement").length}
                 </div>
-                <div className="text-sm text-muted-foreground">Improvements</div>
+                <div className="text-sm text-muted-foreground">{t('updates.stats.improvements')}</div>
               </CardContent>
             </Card>
             <Card className="text-center">
@@ -163,13 +169,13 @@ export default function UpdatesPage() {
                 <div className="text-2xl font-bold text-primary mb-1">
                   {updates.filter((u) => u.type === "bugfix").length}
                 </div>
-                <div className="text-sm text-muted-foreground">Bug Fixes</div>
+                <div className="text-sm text-muted-foreground">{t('updates.stats.bugFixes')}</div>
               </CardContent>
             </Card>
             <Card className="text-center">
               <CardContent className="p-4">
                 <div className="text-2xl font-bold text-primary mb-1">{updates.length}</div>
-                <div className="text-sm text-muted-foreground">Total Updates</div>
+                <div className="text-sm text-muted-foreground">{t('updates.stats.totalUpdates')}</div>
               </CardContent>
             </Card>
           </div>
@@ -185,14 +191,10 @@ export default function UpdatesPage() {
                       {/* Image */}
                       {update.image && (
                         <div className="lg:w-1/3">
-                          <img
+                          <SafeImage
                             src={update.image || "/placeholder.svg"}
                             alt={update.title}
                             className="w-full h-48 lg:h-full object-cover"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.style.display = "none"
-                            }}
                           />
                         </div>
                       )}
@@ -252,23 +254,23 @@ export default function UpdatesPage() {
           {/* Newsletter Signup */}
           <Card className="mt-12 text-center">
             <CardHeader>
-              <CardTitle>Stay Updated</CardTitle>
-              <CardDescription>Get notified about new features and important updates</CardDescription>
+              <CardTitle>{t('updates.newsletter.title')}</CardTitle>
+              <CardDescription>{t('updates.newsletter.description')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="max-w-md mx-auto">
                 <div className="flex gap-2">
                   <input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t('updates.newsletter.placeholder')}
                     className="flex-1 px-3 py-2 border border-input bg-background rounded-md text-sm"
                   />
                   <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors">
-                    Subscribe
+                    {t('updates.newsletter.subscribe')}
                   </button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
-                  We'll only send you important updates. No spam, unsubscribe anytime.
+                  {t('updates.newsletter.disclaimer')}
                 </p>
               </div>
             </CardContent>

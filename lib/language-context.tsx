@@ -20,11 +20,28 @@ const translations = {
   hi: hiTranslations,
 }
 
+// Debug: Log translations on load
+console.log('Translations loaded:', {
+  en: !!enTranslations,
+  hi: !!hiTranslations,
+  enKeys: enTranslations ? Object.keys(enTranslations) : [],
+  hiKeys: hiTranslations ? Object.keys(hiTranslations) : []
+})
+
 // Helper function to get nested translation value
 const getNestedValue = (obj: any, path: string): string => {
-  return path.split('.').reduce((current, key) => {
-    return current && current[key] !== undefined ? current[key] : path
-  }, obj)
+  try {
+    const result = path.split('.').reduce((current, key) => {
+      if (current && current[key] !== undefined) {
+        return current[key]
+      }
+      throw new Error(`Key not found: ${key}`)
+    }, obj)
+    return result
+  } catch (error) {
+    console.warn(`getNestedValue failed for path: ${path}`, error)
+    return path
+  }
 }
 
 interface LanguageProviderProps {
@@ -37,10 +54,14 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
   // Load language preference from localStorage on mount
   useEffect(() => {
+    console.log('LanguageProvider: Loading language preference from localStorage')
     const savedLanguage = localStorage.getItem('preferred-language') as Language
+    console.log('LanguageProvider: Saved language from localStorage:', savedLanguage)
     if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'hi')) {
+      console.log('LanguageProvider: Setting language to:', savedLanguage)
       setLanguageState(savedLanguage)
     }
+    console.log('LanguageProvider: Translations loaded:', { en: !!translations.en, hi: !!translations.hi })
     setIsLoading(false)
   }, [])
 
@@ -50,9 +71,23 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     localStorage.setItem('preferred-language', lang)
   }
 
-  // Translation function
+  // Translation function with detailed debugging
   const t = (key: string): string => {
+    console.log(`[TRANSLATION] Key: ${key}, Language: ${language}`)
+    console.log(`[TRANSLATION] Available translations:`, Object.keys(translations))
+    console.log(`[TRANSLATION] Current language object:`, translations[language])
+    
     const translation = getNestedValue(translations[language], key)
+    console.log(`[TRANSLATION] Result for ${key}:`, translation)
+    
+    if (translation === key) {
+      console.warn(`[TRANSLATION] Missing translation for key: ${key} in language: ${language}`)
+      // Let's also check if the key exists in the other language
+      const otherLang = language === 'en' ? 'hi' : 'en'
+      const otherTranslation = getNestedValue(translations[otherLang], key)
+      console.log(`[TRANSLATION] Key exists in ${otherLang}:`, otherTranslation !== key)
+    }
+    
     return translation || key
   }
 

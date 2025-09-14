@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useMemo } from "react"
 import { Navigation } from "@/components/navigation"
 import { useLanguage } from "@/lib/language-context"
 import { useRoutes } from "@/lib/route-context"
@@ -8,10 +9,97 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Route, Clock, MapPin, Users, ArrowRight, RefreshCw, AlertTriangle } from "lucide-react"
 import { RealTimeDemo } from "@/components/real-time-demo"
+import { RouteSearchBar } from "@/components/route-search-bar"
 
 export default function RoutesPage() {
   const { t } = useLanguage()
   const { routes, updates, isLoading, lastUpdated } = useRoutes()
+  const [searchFrom, setSearchFrom] = useState("")
+  const [searchTo, setSearchTo] = useState("")
+
+  // Filter routes based on search criteria
+  const filteredRoutes = useMemo(() => {
+    if (!searchFrom && !searchTo) {
+      return routes
+    }
+
+    return routes.filter(route => {
+      const fromMatch = !searchFrom || 
+        route.stops.some(stop => 
+          stop.name.toLowerCase().includes(searchFrom.toLowerCase())
+        ) ||
+        route.description.toLowerCase().includes(searchFrom.toLowerCase())
+
+      const toMatch = !searchTo || 
+        route.stops.some(stop => 
+          stop.name.toLowerCase().includes(searchTo.toLowerCase())
+        ) ||
+        route.description.toLowerCase().includes(searchTo.toLowerCase())
+
+      return fromMatch && toMatch
+    })
+  }, [routes, searchFrom, searchTo])
+
+  const handleSearch = (from: string, to: string) => {
+    setSearchFrom(from)
+    setSearchTo(to)
+  }
+
+  const handleClearSearch = () => {
+    setSearchFrom("")
+    setSearchTo("")
+  }
+
+  const popularRoutes = [
+    { from: "Connaught Place", to: "Cyber City", passengers: 245 },
+    { from: "Rajiv Chowk Metro", to: "IGI Airport", passengers: 189 },
+    { from: "Delhi University", to: "DLF Mall", passengers: 156 }
+  ]
+
+  const handlePopularRouteClick = (routeName: string, routeDescription: string) => {
+    // Extract locations from route description (e.g., "University - Mall" -> "University", "Mall")
+    const locations = routeDescription.split(' - ')
+    if (locations.length >= 2) {
+      setSearchFrom(locations[0].trim())
+      setSearchTo(locations[1].trim())
+    } else {
+      // If description doesn't follow expected format, search by route name
+      setSearchFrom(routeName)
+      setSearchTo("")
+    }
+  }
+
+  const handleFindNearestStop = () => {
+    // Clear search and show all routes to help find nearest stops
+    handleClearSearch()
+    // Scroll to routes section
+    document.querySelector('.lg\\:col-span-2')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleCheckSchedule = () => {
+    // Show all active routes for schedule checking
+    handleClearSearch()
+    // Focus on active routes
+    const activeRoutes = routes.filter(route => route.status === 'active')
+    if (activeRoutes.length > 0) {
+      // Scroll to routes section
+      document.querySelector('.lg\\:col-span-2')?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const handlePlanJourney = () => {
+    // Clear search and focus on search bar for journey planning
+    handleClearSearch()
+    // Scroll to search bar
+    document.querySelector('.mb-6')?.scrollIntoView({ behavior: 'smooth' })
+    // Focus on the first input field after a short delay
+    setTimeout(() => {
+      const firstInput = document.querySelector('input[placeholder*="From"]') as HTMLInputElement
+      if (firstInput) {
+        firstInput.focus()
+      }
+    }, 300)
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -32,24 +120,49 @@ export default function RoutesPage() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-balance mb-2">
-                Bus Routes & Schedules
+              <h1 className="text-2xl sm:text-3xl font-bold text-balance mb-2">
+                {t('routes.title')}
               </h1>
               <p className="text-muted-foreground text-pretty">
-                Explore all available bus routes, schedules, and fare information.
+                {t('routes.subtitle')}
               </p>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <RefreshCw className="h-4 w-4 animate-spin" />
-              <span>Live updates</span>
+              <span className="hidden sm:inline">{t('common.loading')}</span>
+              <span className="sm:hidden">Loading</span>
               {lastUpdated && (
-                <span>• Last updated: {lastUpdated.toLocaleTimeString()}</span>
+                <>
+                  <span className="hidden sm:inline">• Last updated: {lastUpdated.toLocaleTimeString()}</span>
+                  <span className="sm:hidden">• {lastUpdated.toLocaleTimeString()}</span>
+                </>
               )}
             </div>
           </div>
         </div>
+
+        {/* Route Search Bar */}
+        <RouteSearchBar onSearch={handleSearch} onClear={handleClearSearch} />
+
+        {/* Search Results Info */}
+        {(searchFrom || searchTo) && (
+          <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-blue-800">
+                <span className="font-medium">Search Results:</span> 
+                {searchFrom && <span> From "{searchFrom}"</span>}
+                {searchFrom && searchTo && <span> →</span>}
+                {searchTo && <span> To "{searchTo}"</span>}
+                <span className="ml-2">({filteredRoutes.length} route{filteredRoutes.length !== 1 ? 's' : ''} found)</span>
+              </div>
+              <Button variant="ghost" size="sm" onClick={handleClearSearch}>
+                Clear Search
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Real-time Updates */}
         {updates.length > 0 && (
@@ -57,7 +170,7 @@ export default function RoutesPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-orange-800">
                 <AlertTriangle className="h-5 w-5" />
-                Live Schedule Updates
+                {t('routes.liveUpdates')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -84,7 +197,21 @@ export default function RoutesPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            {routes.map((route) => (
+            {filteredRoutes.length === 0 && (searchFrom || searchTo) ? (
+              <Card className="p-8 text-center">
+                <div className="text-muted-foreground">
+                  <MapPin className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-medium mb-2">No routes found</h3>
+                  <p className="text-sm">
+                    No bus routes match your search criteria. Try different locations or clear the search to see all routes.
+                  </p>
+                  <Button variant="outline" className="mt-4" onClick={handleClearSearch}>
+                    Show All Routes
+                  </Button>
+                </div>
+              </Card>
+            ) : (
+              filteredRoutes.map((route) => (
               <Card key={route.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -121,7 +248,7 @@ export default function RoutesPage() {
                       <div>
                         <h4 className="font-semibold mb-2 flex items-center gap-2">
                           <MapPin className="h-4 w-4" />
-                          Route Stops
+                          {t('routes.routeStops')}
                         </h4>
                         <div className="space-y-1">
                           {route.stops.map((stop, index) => (
@@ -159,26 +286,26 @@ export default function RoutesPage() {
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4 text-gray-500" />
                           <div>
-                            <div className="text-sm font-medium">Duration</div>
+                            <div className="text-sm font-medium">{t('routes.duration')}</div>
                             <div className="text-sm text-gray-600">{route.duration}</div>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <Users className="h-4 w-4 text-gray-500" />
                           <div>
-                            <div className="text-sm font-medium">Frequency</div>
+                            <div className="text-sm font-medium">{t('routes.frequency')}</div>
                             <div className="text-sm text-gray-600">{route.frequency}</div>
                           </div>
                         </div>
                       </div>
                       
                       <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <span className="text-sm font-medium">Fare:</span>
+                        <span className="text-sm font-medium">{t('routes.fare')}:</span>
                         <span className="text-lg font-bold text-green-600">₹{route.fare}</span>
                       </div>
                       
                       <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                        <span className="text-sm font-medium">Active Buses:</span>
+                        <span className="text-sm font-medium">{t('routes.activeBuses')}:</span>
                         <span className="text-lg font-bold text-blue-600">{route.buses}</span>
                       </div>
                     </div>
@@ -186,49 +313,50 @@ export default function RoutesPage() {
                   
                   <div className="mt-4 pt-4 border-t">
                     <Button variant="outline" className="w-full">
-                      View Schedule & Book Ticket
+                      {t('routes.viewSchedule')}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              ))
+            )}
           </div>
 
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Route Statistics</CardTitle>
-                <CardDescription>Overall route information</CardDescription>
+                <CardTitle>{t('routes.statistics')}</CardTitle>
+                <CardDescription>{t('routes.statisticsDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Total Routes</span>
+                  <span className="text-sm">{t('routes.totalRoutes')}</span>
                   <span className="font-medium">{routes.length}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Active Routes</span>
+                  <span className="text-sm">{t('routes.activeRoutes')}</span>
                   <Badge variant="outline" className="text-green-600">
                     {routes.filter(r => r.status === 'active').length}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Under Maintenance</span>
+                  <span className="text-sm">{t('routes.maintenance')}</span>
                   <Badge variant="outline" className="text-yellow-600">
                     {routes.filter(r => r.status === 'maintenance').length}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Total Buses</span>
+                  <span className="text-sm">{t('routes.totalBuses')}</span>
                   <span className="font-medium">{routes.reduce((sum, r) => sum + r.buses, 0)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Average Fare</span>
+                  <span className="text-sm">{t('routes.averageFare')}</span>
                   <span className="font-medium">
                     ₹{(routes.reduce((sum, r) => sum + r.fare, 0) / routes.length).toFixed(0)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Routes with Delays</span>
+                  <span className="text-sm">{t('routes.delayedRoutes')}</span>
                   <Badge variant="outline" className="text-orange-600">
                     {routes.filter(r => r.delays > 0).length}
                   </Badge>
@@ -238,25 +366,34 @@ export default function RoutesPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Popular Routes</CardTitle>
-                <CardDescription>Most used routes</CardDescription>
+                <CardTitle>{t('routes.popularRoutes')}</CardTitle>
+                <CardDescription>{t('routes.popularRoutesDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div 
+                  className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-blue-300 transition-colors"
+                  onClick={() => handlePopularRouteClick("Route 3", "University - Mall")}
+                >
                   <div>
                     <div className="font-medium">Route 3</div>
                     <div className="text-sm text-gray-600">University - Mall</div>
                   </div>
                   <Badge variant="secondary">High</Badge>
                 </div>
-                <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div 
+                  className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-blue-300 transition-colors"
+                  onClick={() => handlePopularRouteClick("Route 1", "Central Market - Tech Park")}
+                >
                   <div>
                     <div className="font-medium">Route 1</div>
                     <div className="text-sm text-gray-600">Central Market - Tech Park</div>
                   </div>
                   <Badge variant="secondary">Medium</Badge>
                 </div>
-                <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div 
+                  className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 hover:border-blue-300 transition-colors"
+                  onClick={() => handlePopularRouteClick("Route 2", "Metro Station - Airport")}
+                >
                   <div>
                     <div className="font-medium">Route 2</div>
                     <div className="text-sm text-gray-600">Metro Station - Airport</div>
@@ -270,21 +407,33 @@ export default function RoutesPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Common tasks</CardDescription>
+                <CardTitle>{t('routes.quickActions')}</CardTitle>
+                <CardDescription>{t('routes.quickActionsDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  onClick={handleFindNearestStop}
+                >
                   <MapPin className="h-4 w-4 mr-2" />
-                  Find Nearest Stop
+                  {t('routes.findNearestStop')}
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start hover:bg-green-50 hover:border-green-300 transition-colors"
+                  onClick={handleCheckSchedule}
+                >
                   <Clock className="h-4 w-4 mr-2" />
-                  Check Schedule
+                  {t('routes.checkSchedule')}
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start hover:bg-purple-50 hover:border-purple-300 transition-colors"
+                  onClick={handlePlanJourney}
+                >
                   <Route className="h-4 w-4 mr-2" />
-                  Plan Journey
+                  {t('routes.planJourney')}
                 </Button>
               </CardContent>
             </Card>

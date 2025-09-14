@@ -149,10 +149,10 @@ export default function FAQPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-balance mb-2">
-            Frequently Asked Questions
+            {t('faq.title')}
           </h1>
           <p className="text-muted-foreground text-pretty">
-            Find answers to common questions about our bus services, routes, and policies.
+            {t('faq.subtitle')}
           </p>
         </div>
 

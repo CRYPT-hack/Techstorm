@@ -89,10 +89,10 @@ export default function ContactPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-balance mb-2">
-            Contact Us
+            {t('contact.title')}
           </h1>
           <p className="text-muted-foreground text-pretty">
-            Get in touch with us for any questions, feedback, or support needs.
+            {t('contact.subtitle')}
           </p>
         </div>
 
@@ -102,10 +102,10 @@ export default function ContactPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5" />
-                  Send us a Message
+                  {t('contact.form.title')}
                 </CardTitle>
                 <CardDescription>
-                  Fill out the form below and we'll get back to you as soon as possible.
+                  {t('contact.form.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -114,30 +114,30 @@ export default function ContactPage() {
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <MessageSquare className="h-8 w-8 text-green-600" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">Message Sent!</h3>
+                    <h3 className="text-lg font-semibold mb-2">{t('contact.form.success.title')}</h3>
                     <p className="text-muted-foreground">
-                      Thank you for contacting us. We'll get back to you within 24 hours.
+                      {t('contact.form.success.message')}
                     </p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm font-medium mb-2 block">Name *</label>
+                        <label className="text-sm font-medium mb-2 block">{t('contact.form.name')} *</label>
                         <Input
                           value={formData.name}
                           onChange={(e) => handleInputChange("name", e.target.value)}
-                          placeholder="Your full name"
+                          placeholder={t('contact.form.namePlaceholder')}
                           required
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-medium mb-2 block">Email *</label>
+                        <label className="text-sm font-medium mb-2 block">{t('contact.form.email')} *</label>
                         <Input
                           type="email"
                           value={formData.email}
                           onChange={(e) => handleInputChange("email", e.target.value)}
-                          placeholder="your.email@example.com"
+                          placeholder={t('contact.form.emailPlaceholder')}
                           required
                         />
                       </div>
@@ -145,48 +145,46 @@ export default function ContactPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm font-medium mb-2 block">Phone</label>
+                        <label className="text-sm font-medium mb-2 block">{t('contact.form.phone')}</label>
                         <Input
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => handleInputChange("phone", e.target.value)}
-                          placeholder="+91 98765 43210"
+                          placeholder={t('contact.form.phonePlaceholder')}
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-medium mb-2 block">Category *</label>
+                        <label className="text-sm font-medium mb-2 block">{t('contact.form.inquiryType')}</label>
                         <Select value={formData.category} onValueChange={(value) => handleInputChange("category", value)}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a category" />
+                            <SelectValue placeholder={t('contact.form.inquiryPlaceholder')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="general">General Inquiry</SelectItem>
-                            <SelectItem value="complaint">Complaint</SelectItem>
-                            <SelectItem value="suggestion">Suggestion</SelectItem>
-                            <SelectItem value="support">Technical Support</SelectItem>
-                            <SelectItem value="feedback">Feedback</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                            <SelectItem value="general">{t('contact.form.inquiryTypes.general')}</SelectItem>
+                            <SelectItem value="support">{t('contact.form.inquiryTypes.support')}</SelectItem>
+                            <SelectItem value="feedback">{t('contact.form.inquiryTypes.feedback')}</SelectItem>
+                            <SelectItem value="partnership">{t('contact.form.inquiryTypes.partnership')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Subject *</label>
+                      <label className="text-sm font-medium mb-2 block">{t('contact.form.subject')} *</label>
                       <Input
                         value={formData.subject}
                         onChange={(e) => handleInputChange("subject", e.target.value)}
-                        placeholder="Brief description of your inquiry"
+                        placeholder={t('contact.form.subjectPlaceholder')}
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Message *</label>
+                      <label className="text-sm font-medium mb-2 block">{t('contact.form.message')} *</label>
                       <Textarea
                         value={formData.message}
                         onChange={(e) => handleInputChange("message", e.target.value)}
-                        placeholder="Please provide details about your inquiry..."
+                        placeholder={t('contact.form.messagePlaceholder')}
                         rows={5}
                         required
                       />
@@ -201,7 +199,7 @@ export default function ContactPage() {
                       ) : (
                         <>
                           <Send className="h-4 w-4 mr-2" />
-                          Send Message
+                          {t('contact.form.send')}
                         </>
                       )}
                     </Button>
